@@ -1,0 +1,60 @@
+{
+  "id": "422a6fe9268b4b829c1ff791ca55c70c",
+  "title": "How_are_you_Part_1_-_Dialogue__lingoneo.org_.mp3",
+  "date": "2026-07-08 20:08",
+  "mode": "file",
+  "text": "வணக்கம், டேவிட். இன்று நீங்கள் எப்படி இருக்கிறீர்கள்? நான் நன்றாக இருக்கிறேன். நன்றி. நீங்கள் எப்படி இருக்கிறீர்கள்? நானும் நன்றாக இருக்கிறேன். நீங்கள் என்ன செய்கிறீர்கள்? அதிகம் இல்லை. வெறுமனே வேலை செய்யுங்கள். நீங்கள்? அதே. வேலையில் பிஸியாக இருக்கிறீர்கள். உங்களுடன் பேசுவது சிறப்பாக இருந்தது. உங்களிடமும் பேசுவது மிகவும் நன்றாக இருந்தது. சாரா, உன்னைச் சுற்றிப் பார்க்கிறேன். விடைபெறு.",
+  "original_text": "Hello, David. How are you today? I'm good. Thank you. How are you? I'm fine, too. What are you up to? Not much. Just work. And you? Same. Busy with work. It was great talking to you. It was very nice talking to you, too. See you around, Sarah. Bye.",
+  "translated_text": "வணக்கம், டேவிட். இன்று நீங்கள் எப்படி இருக்கிறீர்கள்? நான் நன்றாக இருக்கிறேன். நன்றி. நீங்கள் எப்படி இருக்கிறீர்கள்? நானும் நன்றாக இருக்கிறேன். நீங்கள் என்ன செய்கிறீர்கள்? அதிகம் இல்லை. வெறுமனே வேலை செய்யுங்கள். நீங்கள்? அதே. வேலையில் பிஸியாக இருக்கிறீர்கள். உங்களுடன் பேசுவது சிறப்பாக இருந்தது. உங்களிடமும் பேசுவது மிகவும் நன்றாக இருந்தது. சாரா, உன்னைச் சுற்றிப் பார்க்கிறேன். விடைபெறு.",
+  "detected_language": "en",
+  "target_language": "ta",
+  "segments": [
+    {
+      "start": 0.0,
+      "end": 3.0,
+      "text": "Hello, David. How are you today?"
+    },
+    {
+      "start": 3.0,
+      "end": 8.0,
+      "text": "I'm good. Thank you. How are you?"
+    },
+    {
+      "start": 8.0,
+      "end": 12.0,
+      "text": "I'm fine, too. What are you up to?"
+    },
+    {
+      "start": 12.0,
+      "end": 17.0,
+      "text": "Not much. Just work. And you?"
+    },
+    {
+      "start": 17.0,
+      "end": 21.0,
+      "text": "Same. Busy with work."
+    },
+    {
+      "start": 21.0,
+      "end": 24.0,
+      "text": "It was great talking to you."
+    },
+    {
+      "start": 24.0,
+      "end": 27.0,
+      "text": "It was very nice talking to you, too."
+    },
+    {
+      "start": 28.0,
+      "end": 30.0,
+      "text": "See you around, Sarah."
+    },
+    {
+      "start": 31.0,
+      "end": 32.0,
+      "text": "Bye."
+    }
+  ],
+  "filename": "How_are_you_Part_1_-_Dialogue__lingoneo.org_.mp3",
+  "backend": "whisper"
+}
