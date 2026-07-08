@@ -1,0 +1,19 @@
+flask>=2.3.0
+werkzeug>=2.3.0
+reportlab>=4.0.0
+python-docx>=1.1.0
+
+# ── Transcription (install at least ONE of these groups) ──────────────────
+#
+# OPTION A — Best quality, runs fully offline after first model download
+#   Requires: ffmpeg (https://ffmpeg.org/download.html)
+#   Then run: pip install openai-whisper
+#
+# OPTION B — Lightweight, uses Google's free speech API (internet required)
+#   Requires: ffmpeg for non-WAV files
+#   Then run: pip install SpeechRecognition pydub
+#
+# Install both for maximum compatibility:
+openai-whisper
+SpeechRecognition
+pydub

@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SubtitleAI — Real-Time Speech to Text</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+
+<!-- ── NAV ─────────────────────────────────────────────────────────────── -->
+<nav class="navbar">
+  <div class="nav-brand">
+    <i class="fa-solid fa-microphone-lines"></i>
+    <span>Subtitle<span class="accent">AI</span></span>
+  </div>
+  <div class="nav-links">
+    <a href="/" class="nav-link active"><i class="fa-solid fa-house"></i> Home</a>
+    <a href="/history" class="nav-link"><i class="fa-solid fa-clock-rotate-left"></i> History</a>
+  </div>
+</nav>
+
+<!-- ── DEPS BANNER ──────────────────────────────────────────────────────── -->
+<div id="deps-banner" style="display:none;padding:.8rem 2rem;position:relative;z-index:10"></div>
+<div id="browser-warning" style="display:none;background:rgba(210,153,34,.08);border-bottom:1px solid rgba(210,153,34,.25);padding:.7rem 2rem;font-size:.85rem;color:#d29922;text-align:center;position:relative;z-index:10"></div>
+
+<!-- ── HERO ─────────────────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <h1 class="hero-title">AI-Powered <span class="gradient-text">Subtitle Assistant</span></h1>
+  <p class="hero-sub">Real-time speech transcription · Auto language detection · Multi-format export</p>
+  <div class="hero-badges">
+    <span class="badge"><i class="fa-solid fa-lock-open"></i> 100% Free</span>
+    <span class="badge"><i class="fa-solid fa-server"></i> Runs Locally</span>
+    <span class="badge"><i class="fa-solid fa-language"></i> 40+ Languages</span>
+    <span class="badge"><i class="fa-solid fa-wifi"></i> No Internet Needed*</span>
+  </div>
+</section>
+
+<!-- ── MAIN CONTAINER ────────────────────────────────────────────────────── -->
+<main class="main-container">
+
+  <!-- TAB SWITCHER -->
+  <div class="tab-bar">
+    <button class="tab-btn active" data-tab="live">
+      <i class="fa-solid fa-circle-dot pulse-dot"></i> Live Recording
+    </button>
+    <button class="tab-btn" data-tab="upload">
+      <i class="fa-solid fa-file-audio"></i> Upload File
+    </button>
+  </div>
+
+  <!-- ── LIVE TAB ──────────────────────────────────────────────────────── -->
+  <div class="tab-panel active" id="tab-live">
+    <div class="panel-grid">
+
+      <!-- LEFT: Controls -->
+      <div class="controls-panel glass-card">
+        <h3 class="panel-title"><i class="fa-solid fa-sliders"></i> Settings</h3>
+
+        <div class="form-group">
+          <label>🗣 Speaking Language</label>
+          <select id="live-lang" class="select-input">
+            <option value="">Auto Detect</option>
+            <option value="en-US">English (US)</option>
+            <option value="en-GB">English (UK)</option>
+            <option value="hi-IN">Hindi</option>
+            <option value="ta-IN">Tamil</option>
+            <option value="te-IN">Telugu</option>
+            <option value="ml-IN">Malayalam</option>
+            <option value="kn-IN">Kannada</option>
+            <option value="mr-IN">Marathi</option>
+            <option value="bn-IN">Bengali</option>
+            <option value="gu-IN">Gujarati</option>
+            <option value="pa-IN">Punjabi</option>
+            <option value="ur-PK">Urdu</option>
+            <option value="zh-CN">Chinese (Simplified)</option>
+            <option value="zh-TW">Chinese (Traditional)</option>
+            <option value="ja-JP">Japanese</option>
+            <option value="ko-KR">Korean</option>
+            <option value="ar-SA">Arabic</option>
+            <option value="fr-FR">French</option>
+            <option value="de-DE">German</option>
+            <option value="es-ES">Spanish</option>
+            <option value="it-IT">Italian</option>
+            <option value="pt-BR">Portuguese</option>
+            <option value="ru-RU">Russian</option>
+            <option value="nl-NL">Dutch</option>
+            <option value="pl-PL">Polish</option>
+            <option value="tr-TR">Turkish</option>
+            <option value="sv-SE">Swedish</option>
+            <option value="id-ID">Indonesian</option>
+            <option value="th-TH">Thai</option>
+            <option value="vi-VN">Vietnamese</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>🌐 Translate to</label>
+          <select id="live-translate" class="select-input">
+            <option value="">No Translation</option>
+            <option value="en">English</option>
+            <option value="hi">Hindi</option>
+            <option value="ta">Tamil</option>
+            <option value="te">Telugu</option>
+            <option value="ml">Malayalam</option>
+            <option value="kn">Kannada</option>
+            <option value="mr">Marathi</option>
+            <option value="bn">Bengali</option>
+            <option value="zh-CN">Chinese (Simplified)</option>
+            <option value="ja">Japanese</option>
+            <option value="ko">Korean</option>
+            <option value="ar">Arabic</option>
+            <option value="fr">French</option>
+            <option value="de">German</option>
+            <option value="es">Spanish</option>
+            <option value="it">Italian</option>
+            <option value="pt">Portuguese</option>
+            <option value="ru">Russian</option>
+            <option value="nl">Dutch</option>
+            <option value="tr">Turkish</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>🔡 Font Size</label>
+          <input type="range" id="font-size-slider" min="14" max="48" value="22" class="range-input" />
+          <span id="font-size-val" class="range-label">22px</span>
+        </div>
+
+        <div class="form-group">
+          <label>🎨 Subtitle Color</label>
+          <div class="color-row">
+            <input type="color" id="text-color" value="#ffffff" class="color-picker" />
+            <span class="color-hint">Text color</span>
+            <input type="color" id="bg-color" value="#000000" class="color-picker" />
+            <span class="color-hint">Background</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Opacity</label>
+          <input type="range" id="bg-opacity" min="0" max="100" value="60" class="range-input" />
+          <span id="opacity-val" class="range-label">60%</span>
+        </div>
+
+        <div class="toggle-row">
+          <label class="toggle-label">
+            <input type="checkbox" id="continuous-mode" checked />
+            <span class="toggle-slider"></span>
+            Continuous listening
+          </label>
+          <label class="toggle-label">
+            <input type="checkbox" id="interim-mode" checked />
+            <span class="toggle-slider"></span>
+            Show interim results
+          </label>
+        </div>
+
+        <!-- Record Button -->
+        <button class="record-btn" id="record-btn" onclick="toggleRecording()">
+          <div class="record-icon">
+            <i class="fa-solid fa-microphone" id="record-icon"></i>
+          </div>
+          <span id="record-label">Start Recording</span>
+        </button>
+
+        <div id="live-status" class="status-bar hidden">
+          <div class="waveform" id="waveform">
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+          <span id="status-text">Listening…</span>
+        </div>
+      </div>
+
+      <!-- RIGHT: Subtitle Display -->
+      <div class="display-panel">
+        <div class="subtitle-screen glass-card" id="subtitle-screen">
+          <div class="screen-header">
+            <span class="screen-dot red"></span>
+            <span class="screen-dot yellow"></span>
+            <span class="screen-dot green"></span>
+            <span class="screen-label">Live Subtitles</span>
+            <button class="clear-btn" onclick="clearTranscript()" title="Clear">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+          <div class="subtitle-area" id="subtitle-area">
+            <div class="placeholder-msg" id="placeholder">
+              <i class="fa-solid fa-microphone-slash"></i>
+              <p>Press <strong>Start Recording</strong> to begin live transcription</p>
+              <p class="hint">Your browser microphone will be used</p>
+            </div>
+            <div id="final-text" class="final-text"></div>
+            <div id="interim-text" class="interim-text"></div>
+          </div>
+        </div>
+
+        <!-- Translation Box -->
+        <div class="translation-box glass-card hidden" id="live-translation-box">
+          <div class="tbox-header">
+            <i class="fa-solid fa-language"></i>
+            <span id="live-translation-lang">Translation</span>
+          </div>
+          <div id="live-translated-text" class="translated-text"></div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-row">
+          <div class="stat-chip"><i class="fa-solid fa-font"></i> <span id="word-count">0</span> words</div>
+          <div class="stat-chip"><i class="fa-solid fa-clock"></i> <span id="duration">00:00</span></div>
+          <div class="stat-chip"><i class="fa-solid fa-signal"></i> <span id="confidence">—</span></div>
+        </div>
+
+        <!-- Save Section -->
+        <div class="save-section glass-card" id="live-save-section" style="display:none">
+          <h4><i class="fa-solid fa-floppy-disk"></i> Save Transcription</h4>
+          <input type="text" id="session-title" placeholder="Session title (optional)" class="text-input" />
+          <div class="export-btns">
+            <button class="export-btn" onclick="saveLiveAndExport('txt')">
+              <i class="fa-solid fa-file-lines"></i> TXT
+            </button>
+            <button class="export-btn" onclick="saveLiveAndExport('pdf')">
+              <i class="fa-solid fa-file-pdf"></i> PDF
+            </button>
+            <button class="export-btn" onclick="saveLiveAndExport('docx')">
+              <i class="fa-solid fa-file-word"></i> DOCX
+            </button>
+            <button class="export-btn" onclick="copyToClipboard()">
+              <i class="fa-solid fa-copy"></i> Copy
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── UPLOAD TAB ─────────────────────────────────────────────────────── -->
+  <div class="tab-panel" id="tab-upload">
+    <div class="panel-grid">
+
+      <!-- LEFT: Upload Controls -->
+      <div class="controls-panel glass-card">
+        <h3 class="panel-title"><i class="fa-solid fa-sliders"></i> Settings</h3>
+
+        <div class="form-group">
+          <label>🤖 Whisper Model</label>
+          <select id="whisper-model" class="select-input">
+            <option value="tiny">Tiny — Fastest (lower accuracy)</option>
+            <option value="base" selected>Base — Recommended ✓</option>
+            <option value="small">Small — Better accuracy</option>
+            <option value="medium">Medium — High accuracy</option>
+            <option value="large">Large — Best (very slow)</option>
+          </select>
+          <small class="hint-text">First run downloads the model automatically</small>
+        </div>
+
+        <div class="form-group">
+          <label>🌐 Translate to</label>
+          <select id="upload-translate" class="select-input">
+            <option value="original">Keep Original (no translation)</option>
+            <option value="en">English</option>
+            <option value="hi">Hindi</option>
+            <option value="ta">Tamil</option>
+            <option value="te">Telugu</option>
+            <option value="ml">Malayalam</option>
+            <option value="zh-CN">Chinese (Simplified)</option>
+            <option value="ja">Japanese</option>
+            <option value="ko">Korean</option>
+            <option value="ar">Arabic</option>
+            <option value="fr">French</option>
+            <option value="de">German</option>
+            <option value="es">Spanish</option>
+            <option value="it">Italian</option>
+            <option value="pt">Portuguese</option>
+            <option value="ru">Russian</option>
+          </select>
+        </div>
+
+        <!-- Drop Zone -->
+        <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
+          <i class="fa-solid fa-cloud-arrow-up drop-icon"></i>
+          <p>Drop audio/video file here</p>
+          <p class="hint-text">or click to browse</p>
+          <p class="hint-text">MP3 · MP4 · WAV · M4A · OGG · WebM · FLAC · MKV · AVI · MOV</p>
+          <input type="file" id="file-input" accept=".mp3,.mp4,.wav,.m4a,.ogg,.webm,.flac,.mkv,.avi,.mov,.mpeg,.mpga" hidden />
+        </div>
+
+        <div id="file-info" class="file-info hidden"></div>
+
+        <button class="upload-btn" id="upload-btn" onclick="startTranscription()" disabled>
+          <i class="fa-solid fa-wand-magic-sparkles"></i> Transcribe with AI
+        </button>
+
+        <div id="upload-progress" class="progress-wrap hidden">
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="progress-fill"></div>
+          </div>
+          <div class="progress-status" id="progress-status">Uploading…</div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Results -->
+      <div class="display-panel">
+        <div class="subtitle-screen glass-card" id="upload-screen">
+          <div class="screen-header">
+            <span class="screen-dot red"></span>
+            <span class="screen-dot yellow"></span>
+            <span class="screen-dot green"></span>
+            <span class="screen-label">Transcription Output</span>
+            <button class="clear-btn" onclick="clearUploadResult()" title="Clear">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+          <div class="subtitle-area" id="upload-output">
+            <div class="placeholder-msg" id="upload-placeholder">
+              <i class="fa-solid fa-file-audio"></i>
+              <p>Upload an audio or video file to transcribe</p>
+              <p class="hint">Language is detected automatically by Whisper AI</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Translation Box -->
+        <div class="translation-box glass-card hidden" id="upload-translation-box">
+          <div class="tbox-header">
+            <i class="fa-solid fa-language"></i>
+            <span id="upload-translation-lang">Translation</span>
+          </div>
+          <div id="upload-translated-text" class="translated-text"></div>
+        </div>
+
+        <!-- Segment Timeline -->
+        <div class="segments-panel glass-card hidden" id="segments-panel">
+          <div class="segments-header">
+            <i class="fa-solid fa-timeline"></i> Subtitle Timeline
+            <button class="toggle-segments" onclick="toggleSegments()">Show/Hide</button>
+          </div>
+          <div id="segments-list" class="segments-list"></div>
+        </div>
+
+        <!-- Upload Stats -->
+        <div class="stats-row" id="upload-stats" style="display:none">
+          <div class="stat-chip"><i class="fa-solid fa-font"></i> <span id="upload-words">0</span> words</div>
+          <div class="stat-chip"><i class="fa-solid fa-language"></i> <span id="upload-lang">—</span></div>
+          <div class="stat-chip"><i class="fa-solid fa-list-ol"></i> <span id="upload-segs">0</span> segments</div>
+        </div>
+
+        <!-- Export Buttons (shown after transcription) -->
+        <div class="save-section glass-card hidden" id="upload-save-section">
+          <h4><i class="fa-solid fa-download"></i> Download Transcription</h4>
+          <div class="export-btns">
+            <button class="export-btn" id="dl-txt" onclick="downloadUpload('txt')">
+              <i class="fa-solid fa-file-lines"></i> TXT
+            </button>
+            <button class="export-btn" id="dl-pdf" onclick="downloadUpload('pdf')">
+              <i class="fa-solid fa-file-pdf"></i> PDF
+            </button>
+            <button class="export-btn" id="dl-srt" onclick="downloadUpload('srt')">
+              <i class="fa-solid fa-closed-captioning"></i> SRT
+            </button>
+            <button class="export-btn" id="dl-docx" onclick="downloadUpload('docx')">
+              <i class="fa-solid fa-file-word"></i> DOCX
+            </button>
+            <button class="export-btn" onclick="copyUploadText()">
+              <i class="fa-solid fa-copy"></i> Copy
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ── TOAST ──────────────────────────────────────────────────────────────── -->
+<div id="toast" class="toast hidden"></div>
+
+<!-- ── FEATURES ──────────────────────────────────────────────────────────── -->
+<section class="features-section">
+  <h2 class="section-title">Everything You Need</h2>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon"><i class="fa-solid fa-microphone-lines"></i></div>
+      <h4>Real-Time Live</h4>
+      <p>Browser-native Web Speech API — no delay, subtitles appear as you speak.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon"><i class="fa-solid fa-robot"></i></div>
+      <h4>Whisper AI (Local)</h4>
+      <p>OpenAI's open-source Whisper runs on your machine — no cloud, no cost.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon"><i class="fa-solid fa-language"></i></div>
+      <h4>Auto Language Detection</h4>
+      <p>Whisper detects language from audio. Live mode supports 30+ browser languages.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon"><i class="fa-solid fa-earth-americas"></i></div>
+      <h4>Live Translation</h4>
+      <p>Translate subtitles to any language using the free MyMemory API.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon"><i class="fa-solid fa-closed-captioning"></i></div>
+      <h4>SRT Export</h4>
+      <p>Download timestamped SRT files ready for video editors like Premiere or DaVinci.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon"><i class="fa-solid fa-universal-access"></i></div>
+      <h4>Accessibility First</h4>
+      <p>Built for hearing-impaired users. Large text, high contrast, adjustable colors.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <p>SubtitleAI &copy; 2024 &mdash; Free, open-source, runs 100% locally</p>
+  <p class="footer-hint">*Live mode uses browser's speech API; may need internet. File mode (Whisper) is fully offline after first model download.</p>
+</footer>
+
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

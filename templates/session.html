@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ session.title }} — SubtitleAI</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+<nav class="navbar">
+  <div class="nav-brand">
+    <i class="fa-solid fa-microphone-lines"></i>
+    <span>Subtitle<span class="accent">AI</span></span>
+  </div>
+  <div class="nav-links">
+    <a href="/" class="nav-link"><i class="fa-solid fa-house"></i> Home</a>
+    <a href="/history" class="nav-link"><i class="fa-solid fa-clock-rotate-left"></i> History</a>
+  </div>
+</nav>
+
+<main class="main-container" style="padding-top:2rem">
+  <div class="page-header">
+    <h2 class="page-title">{{ session.title }}</h2>
+    <div class="hcard-meta" style="justify-content:center;margin-top:.5rem">
+      <span><i class="fa-solid fa-calendar"></i> {{ session.date }}</span>
+      <span><i class="fa-solid fa-language"></i> {{ session.detected_language.upper() }}</span>
+      <span><i class="fa-solid fa-font"></i> {{ session.text.split()|length }} words</span>
+      <span class="hcard-mode {{ session.mode }}" style="display:inline-flex;align-items:center;gap:.3rem">
+        {% if session.mode == 'live' %}<i class="fa-solid fa-microphone"></i> Live{% else %}<i class="fa-solid fa-file-audio"></i> File{% endif %}
+      </span>
+    </div>
+  </div>
+
+  <div class="panel-grid" style="margin-top:1.5rem">
+    <div class="display-panel" style="grid-column:1/-1">
+      <div class="subtitle-screen glass-card">
+        <div class="screen-header">
+          <span class="screen-dot red"></span>
+          <span class="screen-dot yellow"></span>
+          <span class="screen-dot green"></span>
+          <span class="screen-label">Transcription</span>
+        </div>
+        <div class="subtitle-area" style="min-height:300px;padding:1.5rem">
+          <div class="final-text">{{ session.text }}</div>
+        </div>
+      </div>
+
+      {% if session.translated_text %}
+      <div class="translation-box glass-card" style="margin-top:1rem">
+        <div class="tbox-header">
+          <i class="fa-solid fa-language"></i>
+          Translation ({{ session.target_language.upper() }})
+        </div>
+        <div class="translated-text">{{ session.translated_text }}</div>
+      </div>
+      {% endif %}
+
+      {% if session.segments %}
+      <div class="segments-panel glass-card" style="margin-top:1rem">
+        <div class="segments-header">
+          <i class="fa-solid fa-timeline"></i> Subtitle Timeline
+        </div>
+        <div class="segments-list">
+          {% for seg in session.segments %}
+          <div class="segment-item">
+            <span class="seg-time">{{ "%.2f"|format(seg.start) }}s — {{ "%.2f"|format(seg.end) }}s</span>
+            <span class="seg-text">{{ seg.text }}</span>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+      <div class="save-section glass-card" style="margin-top:1rem">
+        <h4><i class="fa-solid fa-download"></i> Download</h4>
+        <div class="export-btns">
+          <a href="/download/{{ session.id }}/txt" class="export-btn">
+            <i class="fa-solid fa-file-lines"></i> TXT
+          </a>
+          <a href="/download/{{ session.id }}/pdf" class="export-btn">
+            <i class="fa-solid fa-file-pdf"></i> PDF
+          </a>
+          <a href="/download/{{ session.id }}/srt" class="export-btn">
+            <i class="fa-solid fa-closed-captioning"></i> SRT
+          </a>
+          <a href="/download/{{ session.id }}/docx" class="export-btn">
+            <i class="fa-solid fa-file-word"></i> DOCX
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+</body>
+</html>

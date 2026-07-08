@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>History — SubtitleAI</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+<nav class="navbar">
+  <div class="nav-brand">
+    <i class="fa-solid fa-microphone-lines"></i>
+    <span>Subtitle<span class="accent">AI</span></span>
+  </div>
+  <div class="nav-links">
+    <a href="/" class="nav-link"><i class="fa-solid fa-house"></i> Home</a>
+    <a href="/history" class="nav-link active"><i class="fa-solid fa-clock-rotate-left"></i> History</a>
+  </div>
+</nav>
+
+<main class="main-container" style="padding-top:2rem">
+  <div class="page-header">
+    <h2 class="page-title"><i class="fa-solid fa-clock-rotate-left"></i> Transcription History</h2>
+    <p class="page-sub">All your saved sessions</p>
+  </div>
+
+  {% if sessions %}
+  <div class="history-grid">
+    {% for s in sessions %}
+    <div class="history-card glass-card" id="card-{{ s.id }}">
+      <div class="hcard-top">
+        <div class="hcard-mode {{ s.mode }}">
+          {% if s.mode == 'live' %}
+            <i class="fa-solid fa-microphone"></i> Live
+          {% else %}
+            <i class="fa-solid fa-file-audio"></i> File
+          {% endif %}
+        </div>
+        <button class="delete-btn" onclick="deleteSession('{{ s.id }}')" title="Delete">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <h4 class="hcard-title">{{ s.title }}</h4>
+      <div class="hcard-meta">
+        <span><i class="fa-solid fa-calendar"></i> {{ s.date }}</span>
+        <span><i class="fa-solid fa-language"></i> {{ s.language.upper() }}</span>
+        <span><i class="fa-solid fa-font"></i> {{ s.word_count }} words</span>
+      </div>
+      <div class="hcard-actions">
+        <a href="/session/{{ s.id }}" class="hcard-btn view-btn">
+          <i class="fa-solid fa-eye"></i> View
+        </a>
+        <a href="/download/{{ s.id }}/txt" class="hcard-btn dl-btn">
+          <i class="fa-solid fa-file-lines"></i> TXT
+        </a>
+        <a href="/download/{{ s.id }}/pdf" class="hcard-btn dl-btn">
+          <i class="fa-solid fa-file-pdf"></i> PDF
+        </a>
+        <a href="/download/{{ s.id }}/srt" class="hcard-btn dl-btn">
+          <i class="fa-solid fa-closed-captioning"></i> SRT
+        </a>
+        <a href="/download/{{ s.id }}/docx" class="hcard-btn dl-btn">
+          <i class="fa-solid fa-file-word"></i> DOCX
+        </a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state glass-card">
+    <i class="fa-solid fa-inbox fa-3x" style="color:var(--cyan-dim);margin-bottom:1rem"></i>
+    <h3>No transcriptions yet</h3>
+    <p>Start recording or upload a file to create your first transcription.</p>
+    <a href="/" class="record-btn" style="display:inline-flex;text-decoration:none;margin-top:1rem">
+      <i class="fa-solid fa-microphone"></i> Go to Home
+    </a>
+  </div>
+  {% endif %}
+</main>
+
+<div id="toast" class="toast hidden"></div>
+<script>
+async function deleteSession(sid) {
+  if (!confirm('Delete this transcription? This cannot be undone.')) return;
+  const r = await fetch(`/api/delete/${sid}`, { method: 'DELETE' });
+  const d = await r.json();
+  if (d.success) {
+    document.getElementById(`card-${sid}`).remove();
+    showToast('Deleted', 'success');
+    // If no cards left, reload
+    if (!document.querySelector('.history-card')) location.reload();
+  } else {
+    showToast('Delete failed', 'error');
+  }
+}
+function showToast(msg, type='info') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast ${type}`;
+  setTimeout(() => t.classList.add('hidden'), 3000);
+}
+</script>
+</body>
+</html>
