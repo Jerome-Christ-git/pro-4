@@ -2,11 +2,7 @@ flask>=2.3.0
 werkzeug>=2.3.0
 reportlab>=4.0.0
 python-docx>=1.1.0
-
-# ── Transcription (required for file upload) ──────────────────────────────
 SpeechRecognition>=3.10.0
 pydub>=0.25.1
 imageio-ffmpeg>=0.4.9
-
-# ── Optional: local offline AI (higher quality, no internet needed) ────────
-# openai-whisper
+gunicorn>=23.0.0
